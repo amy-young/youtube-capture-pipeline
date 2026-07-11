@@ -1,0 +1,6 @@
+# never commit real credentials or personal data
+*cookies*.txt
+.env
+.env.*
+videos.csv
+*-live.json
