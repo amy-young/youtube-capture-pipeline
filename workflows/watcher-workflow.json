@@ -491,6 +491,32 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Queue playlists (digest/autofile/full) are pending-queues: once a video is in the\n// ledger from a previous run, remove it from those playlists so the queue stays short\n// and can never outgrow the fetch window again. Tag playlists are curated categories\n// and are never touched. Capped per run: each delete costs 50 YouTube quota units\n// (10k/day), so a large backlog drains over a few runs.\nconst MAX_REMOVALS_PER_RUN = 60;\nconst queueModes = new Set(['digest', 'autofile', 'full']);\n\nconst plMode = {};\nfor (const p of $('Read playlists').all().map(i => i.json)) {\n  if (p.playlist_id) plMode[p.playlist_id] = (p.mode || 'tag').toLowerCase();\n}\nconst processed = new Set($('Read ledger').all().map(i => String(i.json.video_id)));\n\nconst out = [];\nfor (const item of $('Get Playlist Items').all()) {\n  const s = item.json.snippet || item.json;\n  const videoId = s.resourceId?.videoId || item.json.contentDetails?.videoId;\n  const playlistItemId = item.json.id;\n  if (!playlistItemId || !videoId) continue;\n  if (!queueModes.has(plMode[s.playlistId])) continue;\n  if (!processed.has(videoId)) continue;\n  out.push({ json: {\n    playlistItemId,\n    playlist_id: s.playlistId,\n    video_id: videoId,\n    title: s.title || videoId\n  }});\n  if (out.length >= MAX_REMOVALS_PER_RUN) break;\n}\nreturn out;"
+      },
+      "id": "yw-build-removal-list",
+      "name": "Build Removal List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-500, 260]
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://www.googleapis.com/youtube/v3/playlistItems?id={{ $json.playlistItemId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "options": { "batching": { "batch": { "batchSize": 5, "batchInterval": 1000 } } }
+      },
+      "id": "yw-remove-from-queue",
+      "name": "Remove from Queue Playlist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-280, 260],
+      "credentials": {"youTubeOAuth2Api": {"id": "REPLACE_WITH_YOUTUBE_CREDENTIAL_ID", "name": "YouTube account"}},
+      "onError": "continueRegularOutput"
     }
   ],
   "connections": {
@@ -512,7 +538,13 @@
       "main": [[{ "node": "Get Playlist Items", "type": "main", "index": 0 }]]
     },
     "Get Playlist Items": {
-      "main": [[{ "node": "Resolve New Videos", "type": "main", "index": 0 }]]
+      "main": [[
+        { "node": "Resolve New Videos", "type": "main", "index": 0 },
+        { "node": "Build Removal List", "type": "main", "index": 0 }
+      ]]
+    },
+    "Build Removal List": {
+      "main": [[{ "node": "Remove from Queue Playlist", "type": "main", "index": 0 }]]
     },
     "Resolve New Videos": {
       "main": [[{ "node": "Loop Videos", "type": "main", "index": 0 }]]
