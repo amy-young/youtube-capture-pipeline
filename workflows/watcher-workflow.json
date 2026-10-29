@@ -44,7 +44,7 @@
       "position": [-1440, -160],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }
@@ -72,7 +72,7 @@
       "position": [-1440, 0],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }
@@ -100,7 +100,7 @@
       "position": [-1440, 160],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }
@@ -120,8 +120,8 @@
         "resource": "playlistItem",
         "operation": "getAll",
         "playlistId": "={{ $json.playlist_id }}",
-        "limit": 50,
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
       "id": "yw-0007",
       "name": "Get Playlist Items",
@@ -130,7 +130,7 @@
       "position": [-720, 0],
       "credentials": {
         "youTubeOAuth2Api": {
-          "id": "REPLACE_WITH_YOUTUBE_CREDENTIAL_ID",
+          "id": "YOUR_YOUTUBE_CREDENTIAL_ID",
           "name": "YouTube account"
         }
       }
@@ -189,7 +189,7 @@
       "position": [240, -80],
       "credentials": {
         "sshPrivateKey": {
-          "id": "REPLACE_WITH_SSH_CREDENTIAL_ID",
+          "id": "YOUR_SSH_CREDENTIAL_ID",
           "name": "VPS SSH"
         }
       }
@@ -302,7 +302,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Format the digest block + extract resource rows.\nconst v = $('Build Mining Prompt').item.json;\nconst resp = $input.first().json;\nconst mined = resp.choices?.[0]?.message?.content || 'MINING_FAILED';\n\nlet resources = [];\nconst jsonMatch = mined.match(/```json\\s*([\\s\\S]*?)```/);\nif (jsonMatch) {\n  try { resources = (JSON.parse(jsonMatch[1]).resources || []); } catch (e) {}\n}\nconst cleanMined = mined.replace(/```json[\\s\\S]*?```/, '').trim();\nconst noValue = /##\\s*Verdict[\\s\\S]*NO-VALUE/i.test(mined);\n\nconst filedTag = v.mode === 'autofile' ? ' [auto-filed to OpenBrain]' : '';\nconst block = [\n  `── ${v.title} — ${v.channel}${filedTag} ──`,\n  cleanMined,\n  `Watch again: https://www.youtube.com/watch?v=${v.video_id}`,\n  ''\n].join('\\n');\n\nreturn [{ json: {\n  video_id: v.video_id,\n  title: v.title,\n  channel: v.channel,\n  categories: v.categories,\n  digestBlock: noValue ? '' : block,\n  noValue,\n  resources: resources.map(r => ({\n    resource: r.name || '',\n    type: r.type || '',\n    url: r.url || '',\n    note: r.note || '',\n    video_id: v.video_id,\n    video_title: v.title,\n    date: new Date().toISOString().slice(0, 10),\n    status: 'new'\n  }))\n}}];"
+        "jsCode": "// Format the digest block + extract resource rows.\nconst v = $('Build Mining Prompt').item.json;\nconst resp = $input.first().json;\nconst mined = resp.choices?.[0]?.message?.content || 'MINING_FAILED';\n\nlet resources = [];\nconst jsonMatch = mined.match(/```json\\s*([\\s\\S]*?)```/);\nif (jsonMatch) {\n  try { resources = (JSON.parse(jsonMatch[1]).resources || []); } catch (e) {}\n}\nconst cleanMined = mined.replace(/```json[\\s\\S]*?```/, '').trim();\nconst noValue = /##\\s*Verdict[\\s\\S]*NO-VALUE/i.test(mined);\n\nconst filedTag = v.mode === 'autofile' ? ' [auto-filed to OpenBrain]' : '';\nconst block = [\n  `── ${v.title} — ${v.channel}${filedTag} ──`,\n  cleanMined,\n  '',\n  `Watch again: https://www.youtube.com/watch?v=${v.video_id}`,\n  ''\n].join('\\n');\n\nreturn [{ json: {\n  video_id: v.video_id,\n  title: v.title,\n  channel: v.channel,\n  categories: v.categories,\n  digestBlock: noValue ? '' : block,\n  noValue,\n  resources: resources.map(r => ({\n    resource: r.name || '',\n    type: r.type || '',\n    url: r.url || '',\n    note: r.note || '',\n    video_id: v.video_id,\n    video_title: v.title,\n    date: new Date().toISOString().slice(0, 10),\n    status: 'new'\n  }))\n}}];"
       },
       "id": "yw-0018",
       "name": "Format Digest Block",
@@ -346,7 +346,7 @@
       "position": [1680, 0],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }
@@ -487,7 +487,7 @@
       "position": [480, 560],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }
@@ -515,7 +515,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [-280, 260],
-      "credentials": {"youTubeOAuth2Api": {"id": "REPLACE_WITH_YOUTUBE_CREDENTIAL_ID", "name": "YouTube account"}},
+      "credentials": {"youTubeOAuth2Api": {"id": "YOUR_YOUTUBE_CREDENTIAL_ID", "name": "YouTube account"}},
       "onError": "continueRegularOutput"
     }
   ],

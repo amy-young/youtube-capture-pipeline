@@ -30,7 +30,7 @@ Manual Trigger
 ## Step 1 — Create the Google Sheet
 
 1. Go to Google Drive → New → Google Sheets
-2. Name it: `PKA YouTube Backlog`
+2. Name it: `YouTube Backlog`
 3. Row 1 headers (exact, case-sensitive):
    `video_id` | `title` | `channel` | `category` | `status`
 4. Import `videos.csv` (File → Import → Upload → Replace current sheet)
@@ -64,8 +64,10 @@ Manual Trigger
 
 | Placeholder | Replace with |
 |---|---|
-| `REPLACE_WITH_SHEET_ID` | Sheet ID from Step 1 (appears in 3 nodes) |
-| `REPLACE_WITH_GSHEETS_CREDENTIAL_ID` | Credential ID from Step 2 (appears in 3 nodes) |
+| `YOUR_SHEET_ID` | Sheet ID from Step 1 (appears in 3 nodes) |
+| `YOUR_GSHEETS_CREDENTIAL_ID` | Credential ID from Step 2 (appears in 3 nodes) |
+| `YOUR_SSH_CREDENTIAL_ID` | SSH credential for the VPS host (1 node) |
+| `YOUR_USER` | your user on the VPS host, in the yt-dlp command's deno + cookies paths (1 node) |
 
 ---
 
@@ -77,7 +79,7 @@ Before running the full batch:
 2. Find one row you want to test — clear its status (leave blank)
 3. Run the workflow manually
 4. Verify:
-   - A .md file appears in `G:\My Drive\PKA-System\_INBOX\`
+   - A .md file appears in your Drive `_INBOX` folder (`YOUR_INBOX_FOLDER_ID`)
    - The existing pipeline synthesizes it (email notification arrives)
    - The row in the Sheet shows `processed`
 5. Once confirmed, clear `skip` from the rows you want to process
@@ -89,14 +91,9 @@ Before running the full batch:
 The workflow processes one video every ~3 seconds. For 224 pending videos, a full run takes ~11 minutes. You can stop mid-run and resume — it skips already-processed rows.
 
 **Recommended batch order** (process by category, reset skips):
-1. PKA → AI Systems (56 videos) — highest priority
-2. PKA → Claude & Tools (89 videos)
-3. PKA → Ventures (38 videos)
-4. PKA → Content & Brand (20 videos)
-5. PKA → Web Dev (13 videos)
-6. PKA → Learning (7 videos)
-7. PKA → Travel (2 videos)
-8. REVIEW (12 videos) — decide individually before un-skipping
+1. Your highest-priority category first
+2. Then the remaining categories, largest to smallest
+3. REVIEW rows last — decide individually before un-skipping
 
 ---
 

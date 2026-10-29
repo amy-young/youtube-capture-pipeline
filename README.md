@@ -42,6 +42,8 @@ flowchart TD
 | Subject playlists | Tags only — the playlist name becomes the video's `category`, selecting the synthesis lens |
 | Trusted channels (config sheet) | Their videos auto-file when saved to *any* playlist, with a per-creator default category |
 
+`Capture` and `transcript` are queues: once a video is in the ledger, the next run removes it from the playlist, so a queue only ever holds what hasn't been processed. Subject playlists are curated collections and are never touched.
+
 A Google Sheet is the entire configuration layer: playlists → modes, trusted channels → categories, a dedup ledger, and a resource tracker with triage statuses.
 
 ### Category lenses
@@ -95,6 +97,8 @@ Things that will bite you if you build this yourself:
 4. **YouTube's Watch Later playlist is invisible to the API** — a long-standing limitation. Treat it as a TV-side inbox and move keepers to a real playlist from your phone.
 5. **Publish date ≠ capture date.** If your recency logic uses ingestion timestamps, a backlog import makes six-month-old videos look like today's news. Carry the upload date through every pipeline stage.
 6. **Update-Row nodes with empty mapped fields overwrite cells with blanks** in the Google Sheets node — delete unused mappings, don't leave them empty.
+7. **A fetch limit on a growing playlist fails silently.** My watcher fetched the first 50 items of each playlist. Once the Capture playlist passed 50, new saves landed outside the window and the digest just stopped, with no error, for more than ten weeks. Fix: fetch everything (`returnAll`), and drain each queue playlist as items are processed so it can't outgrow any limit again.
+8. **n8n's built-in YouTube node can't delete playlist items.** Its delete sends the item `id` in the request body; the API wants it as a query parameter, so every delete fails with a 400, and under continue-on-error that failure is silent. Use an HTTP Request node (`DELETE .../playlistItems?id=...`) with the YouTube OAuth credential instead.
 
 ## License
 

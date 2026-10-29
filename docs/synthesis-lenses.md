@@ -7,7 +7,7 @@
 > (parse `published:` in the prompt builder → `_published` → header line in the
 > format node) or re-export the live workflow instead of using these blocks.
 
-The existing "PKA Document Processing Pipeline" workflow has ONE synthesis prompt,
+The existing "Document Processing Pipeline" workflow has ONE synthesis prompt,
 hardcoded to the ADRD/research lens. This update makes it lens-based:
 
 - **Tagged files** (`category:` in frontmatter — written by the YouTube watcher):
@@ -23,7 +23,7 @@ tag or by classification, like every other lens.
 
 ## What to change
 
-Two nodes in the "PKA Document Processing Pipeline" workflow:
+Two nodes in the "Document Processing Pipeline" workflow:
 1. **"Code in JavaScript"** (prompt builder, before "Synthesize via OpenRouter")
 2. **"Format Synthesis Markdown"** (after it)
 
@@ -73,10 +73,10 @@ ${discourseLayer}
 
 Keep the two layers as separate sections. End with: which audience each finding serves best — training program, community discussion, or blog post.`,
 
-  'legal': `You are extracting content-creation material from a legal video/podcast transcript for two family-law practice websites (collaborative law focus, Washington State). The audience for the eventual content is potential clients and referral sources, NOT other lawyers.
+  'legal': `You are extracting content-creation material from a legal video/podcast transcript for a family-law practice website. The audience for the eventual content is potential clients and referral sources, NOT other lawyers.
 
 LAYER 1 — THE MATERIAL (facts):
-- Legal developments: rule/statute changes, notable cases, jurisdiction specifics (flag WA-relevant items)
+- Legal developments: rule/statute changes, notable cases, jurisdiction specifics (flag items relevant to YOUR_JURISDICTION)
 - Process explanations: how collaborative divorce, mediation, and related processes actually work — steps, timelines, cost factors
 - Client questions and misconceptions: what people ask or get wrong (each one is an FAQ or post seed)
 - Practice positioning: how attorneys explain their value, differentiate collaborative from litigation, handle client acquisition
@@ -84,13 +84,13 @@ ${discourseLayer}
 
 Keep the two layers as separate sections. End with: 2-3 client-facing content angles (plain-language, empathetic, no legalese).`,
 
-  'adrd-memory-care': `You are extracting signal from a research or clinical document for a knowledge base owner with deep expertise in Alzheimer's disease research, memory care, and caregiver support (NACC/ADRC context).
+  'adrd-memory-care': `You are extracting signal from a research or clinical document for a knowledge base owner with deep expertise in Alzheimer's disease research, memory care, and caregiver support.
 
 Extract:
 - Key findings
 - Methodology
 - Worth reading in full (Yes/No + reason)
-- Relevance signals (Alzheimer's/memory care, caregiver support, consumer app ideas, NACC institutional relevance — each High/Medium/Low + why)
+- Relevance signals (Alzheimer's/memory care, caregiver support, consumer app ideas, research-community relevance — each High/Medium/Low + why)
 - Quotable findings (1-3)
 - Related topics/tags`
 };
@@ -119,7 +119,7 @@ if (category && LENSES[category]) {
     .map(([slug, body]) => `### If "${slug}":\n${body}`)
     .join('\n\n');
   task = `STEP 1 — CLASSIFY. Decide which topic area best fits this document:
-- adrd-memory-care (Alzheimer's/dementia research, memory care, caregiving, NACC/ADRC)
+- adrd-memory-care (Alzheimer's/dementia research, memory care, caregiving)
 - ai-systems (AI tools, agents, knowledge systems, automation, coding workflows)
 - legal (family law, collaborative law, legal practice)
 - womens-sports (women's sports coverage, athletes, leagues)
@@ -210,8 +210,8 @@ even manually dropped PDFs get a category and join the right brief automatically
    declares the category on its first output line (`general` if nothing fits)
 
 Multiple playlists can map to one category — playlist_id is the Sheet's join key,
-the Sheet `name` column is the category slug (e.g. both "PKA → AI Systems" and
-"PKA → Claude & Tools" → `ai-systems`).
+the Sheet `name` column is the category slug (e.g. both "Research → AI Systems" and
+"Research → Claude & Tools" → `ai-systems`).
 
 ## Keeping prompts in sync
 

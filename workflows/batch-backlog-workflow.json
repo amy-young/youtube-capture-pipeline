@@ -31,7 +31,7 @@
       "position": [-960, 0],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }
@@ -115,7 +115,7 @@
       "position": [-240, 0],
       "credentials": {
         "sshPrivateKey": {
-          "id": "REPLACE_WITH_SSH_CREDENTIAL_ID",
+          "id": "YOUR_SSH_CREDENTIAL_ID",
           "name": "VPS SSH"
         }
       }
@@ -148,7 +148,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const stdout = $input.first().json.stdout || '';\nconst videoData = $('Loop Over Items').item.json;\n\n// Strip VTT formatting\nconst lines = stdout.split('\\n');\nconst textLines = [];\n\nfor (const line of lines) {\n  const trimmed = line.trim();\n  if (trimmed.startsWith('WEBVTT') || trimmed.startsWith('Kind:') || trimmed.startsWith('Language:')) continue;\n  if (trimmed.includes('-->')) continue;\n  if (trimmed === '' || /^\\d+$/.test(trimmed)) continue;\n  const cleaned = trimmed.replace(/<[^>]+>/g, '').trim();\n  if (cleaned) textLines.push(cleaned);\n}\n\n// Deduplicate consecutive identical lines (common in auto-captions)\nconst deduped = textLines.filter((line, i) => i === 0 || line !== textLines[i - 1]);\nconst transcript = deduped.join(' ');\n\nconst today = new Date().toISOString().slice(0, 10);\nconst title = videoData.title || videoData.video_id;\nconst channel = videoData.channel || 'Unknown';\nconst videoId = videoData.video_id;\n\n// Normalize category to a lens slug (videos.csv now carries slugs; this\n// also maps any leftover display names like 'PKA \\u2192 Claude & Tools (85 videos)')\nlet category = String(videoData.category || '').toLowerCase()\n  .replace(/^pka\\s*\\u2192\\s*/, '')\n  .replace(/\\(\\d+\\s*videos?\\)/, '')\n  .trim()\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-|-$/g, '');\nconst SLUG_MAP = { 'ai-systems': 'ai-systems', 'claude-tools': 'ai-systems', 'ventures': 'ventures', 'content-brand': 'content-brand', 'web-dev': 'web-dev', 'learning': 'learning', 'travel': 'travel' };\ncategory = SLUG_MAP[category] || category || 'uncategorized';\n\nconst slug = title\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-|-$/g, '')\n  .substring(0, 60);\n\nconst content = ['---', `title: ${title.replace(/:/g, ' -')}`, `channel: ${channel.replace(/:/g, ' -')}`, `category: ${category}`, `url: https://www.youtube.com/watch?v=${videoId}`, `captured: ${today}`, 'tier: autofile', 'source: youtube-batch', '---', '', `# ${title}`, '', '## Transcript', '', transcript, ''].join('\\n');\n\nconst filename = `${today}-${slug}.md`;\n\nreturn [{ json: { filename, content, originalName: filename, video_id: videoId } }];"
+        "jsCode": "const stdout = $input.first().json.stdout || '';\nconst videoData = $('Loop Over Items').item.json;\n\n// Strip VTT formatting\nconst lines = stdout.split('\\n');\nconst textLines = [];\n\nfor (const line of lines) {\n  const trimmed = line.trim();\n  if (trimmed.startsWith('WEBVTT') || trimmed.startsWith('Kind:') || trimmed.startsWith('Language:')) continue;\n  if (trimmed.includes('-->')) continue;\n  if (trimmed === '' || /^\\d+$/.test(trimmed)) continue;\n  const cleaned = trimmed.replace(/<[^>]+>/g, '').trim();\n  if (cleaned) textLines.push(cleaned);\n}\n\n// Deduplicate consecutive identical lines (common in auto-captions)\nconst deduped = textLines.filter((line, i) => i === 0 || line !== textLines[i - 1]);\nconst transcript = deduped.join(' ');\n\nconst today = new Date().toISOString().slice(0, 10);\nconst title = videoData.title || videoData.video_id;\nconst channel = videoData.channel || 'Unknown';\nconst videoId = videoData.video_id;\n\n// Normalize category to a lens slug (videos.csv now carries slugs; this\n// also maps any leftover display names like 'Research \\u2192 Claude & Tools (85 videos)')\nlet category = String(videoData.category || '').toLowerCase()\n  .replace(/^pka\\s*\\u2192\\s*/, '')\n  .replace(/\\(\\d+\\s*videos?\\)/, '')\n  .trim()\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-|-$/g, '');\nconst SLUG_MAP = { 'ai-systems': 'ai-systems', 'claude-tools': 'ai-systems', 'ventures': 'ventures', 'content-brand': 'content-brand', 'web-dev': 'web-dev', 'learning': 'learning', 'travel': 'travel' };\ncategory = SLUG_MAP[category] || category || 'uncategorized';\n\nconst slug = title\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-|-$/g, '')\n  .substring(0, 60);\n\nconst content = ['---', `title: ${title.replace(/:/g, ' -')}`, `channel: ${channel.replace(/:/g, ' -')}`, `category: ${category}`, `url: https://www.youtube.com/watch?v=${videoId}`, `captured: ${today}`, 'tier: autofile', 'source: youtube-batch', '---', '', `# ${title}`, '', '## Transcript', '', transcript, ''].join('\\n');\n\nconst filename = `${today}-${slug}.md`;\n\nreturn [{ json: { filename, content, originalName: filename, video_id: videoId } }];"
       },
       "id": "a1b2c3d4-0007-0007-0007-000000000007",
       "name": "Format Transcript .md",
@@ -224,7 +224,7 @@
       "position": [960, -80],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }
@@ -260,7 +260,7 @@
       "position": [240, 80],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "id": "YOUR_GSHEETS_CREDENTIAL_ID",
           "name": "Google Sheets account"
         }
       }

@@ -17,11 +17,11 @@ distinct destinations, and the playlist chooses between them:
 
 | Tier | Trigger | Destination |
 |---|---|---|
-| **Auto-file** | Video added to the existing `transcript` playlist, OR published by a trusted channel (Nate Jones, etc.) and saved to any watched playlist | Full transcript → `_INBOX` → Gemini synthesis → OpenBrain (existing pipeline, unchanged) — AND the video also runs through the mining pass, so it appears in the daily digest (marked "[auto-filed to OpenBrain]") with its resources in the ledger (added 2026-07-09) |
-| **Digest** | Video added to `→ Capture` playlist (the one-tap save from phone/TV) | Transcript + **video description** → Gemini mining pass → daily digest email + resource ledger + .md saved to a review folder (NOT imported to OpenBrain) |
+| **Auto-file** | Video added to the existing `transcript` playlist, OR published by a trusted channel (a creator you list in the config sheet) and saved to any watched playlist | Full transcript → `_INBOX` → Gemini synthesis → OpenBrain (existing pipeline, unchanged) — AND the video also runs through the mining pass, so it appears in the daily digest (marked "[auto-filed to OpenBrain]") with its resources in the ledger (added 2026-07-09) |
+| **Digest** | Video added to `Capture` playlist (the one-tap save from phone/TV) | Transcript + **video description** → Gemini mining pass → daily digest email + resource ledger + .md saved to a review folder (NOT imported to OpenBrain) |
 | **Subject tag** | Video also in a subject playlist | Adds `category:` to frontmatter / digest entry. Subject playlists alone never trigger capture |
 
-Answer to "do I need a Capture Review playlist": **one new playlist total** — `→ Capture`.
+Answer to "do I need a Capture Review playlist": **one new playlist total** — `Capture`.
 The old "review & extract into OpenBrain" tier is gone; the digest replaces it.
 
 ## What the mining pass extracts (per video)
@@ -120,7 +120,7 @@ Only the Layer 1 field list changes per category:
 | `womens-sports` | storylines, stats/records, quotes, angles |
 | `ai-systems` | tools/repos/methods, workflow patterns, capability claims, build ideas |
 | `adrd-memory-care` | findings, methodology, clinical/caregiver implications, quotables (extends existing prompt) |
-| `legal` | legal developments (WA-flagged), process explanations, client questions/misconceptions, practice positioning — audience is potential clients, not lawyers (added 2026-07-08) |
+| `legal` | legal developments (flagged for your jurisdiction), process explanations, client questions/misconceptions, practice positioning — audience is potential clients, not lawyers (added 2026-07-08) |
 | `travel`, `web-dev`, ... | fall to the GENERIC content lens (material + discourse, no domain fields) until defined — a lens is one prompt block, cheap to add |
 
 Lens routing (revised 2026-07-08 — no fixed default): named lens > generic content
@@ -136,13 +136,13 @@ column is the category slug, so YouTube playlist titles never need renaming.
 One capture category serves multiple ventures. The mapping lives in the CONTENT
 ENGINE, not the pipeline — the pipeline only tags and extracts once:
 
-| Capture category | Feeds ventures |
+| Capture category | Feeds content for |
 |---|---|
-| `ai-systems` | AI Training Program (curriculum material), AI Community (discussion topics), Portfolio blog (posts about AI) |
-| `womens-sports` | Women's sports blog |
-| `adrd-memory-care` | Alz researcher site, Memory care directory, NACC awareness |
-| `legal` | Collaborative law site, Lisa's legal site |
-| `travel` | Travel app (when unparked) |
+| `ai-systems` | Training curriculum, community discussion topics, blog posts |
+| `womens-sports` | A sports blog |
+| `adrd-memory-care` | A research-facing site, a caregiver-facing directory |
+| `legal` | A law practice website (client-facing FAQs and posts) |
+| `travel` | Reserved for a future project |
 
 Flow: capture (tagged once) → OpenBrain → per-category **topic synthesizer** in the
 OB1 wiki compiler (pattern: `current-state`) compiles a rolling content-sources brief
@@ -156,7 +156,7 @@ the existing default). Add more only when a venture unparks.
 
 ## Components
 
-### 1. Sheet: `PKA YouTube Watcher`
+### 1. Sheet: `YouTube Watcher`
 - Tab `playlists`: `playlist_id | name | mode` (mode: `autofile` / `digest` / `tag`)
 - Tab `trusted_channels`: `channel_name | channel_id`
 - Tab `ledger`: `video_id | title | channel | mode_applied | categories | processed_date | status`
@@ -169,7 +169,7 @@ Single daily run (~5:30am), so the digest is one email, not a trickle:
    `playlistItems` for each watched playlist. API, not RSS — RSS fails on private
    playlists.
 3. Build one row per new video; merge categories; resolve mode
-   (trusted channel → autofile; `transcript` playlist → autofile; `→ Capture` → digest)
+   (trusted channel → autofile; `transcript` playlist → autofile; `Capture` → digest)
 4. Loop (batch 1, 3s wait, same yt-dlp Execute Command pattern as batch workflow):
    - yt-dlp: subs + `--dump-json` metadata (description, channel, duration, upload date)
    - **Autofile path:** format .md → `_INBOX` → existing pipeline
@@ -183,15 +183,15 @@ Single daily run (~5:30am), so the digest is one email, not a trickle:
 
 ## Capture ergonomics (phone/TV reality)
 
-- **Phone:** Share → Save to playlist → `→ Capture`. Reliable, two taps.
+- **Phone:** Share → Save to playlist → `Capture`. Reliable, two taps.
 - **TV:** the TV app often only offers "Watch Later". **Watch Later is not readable
   via the YouTube API** (long-standing limitation) — the watcher cannot see it.
-  Workaround: save to Watch Later on TV, then on the phone move items to `→ Capture`
+  Workaround: save to Watch Later on TV, then on the phone move items to `Capture`
   (Watch Later → three-dot → Save to playlist). Treat Watch Later as the TV inbox,
-  `→ Capture` as the real trigger.
+  `Capture` as the real trigger.
 
 ## What the owner sets up once
-1. YouTube: create `→ Capture` playlist (keep `transcript` + subject playlists as-is)
+1. YouTube: create `Capture` playlist (keep `transcript` + subject playlists as-is)
 2. n8n: YouTube OAuth2 credential
 3. Create the Sheet (4 tabs); fill `playlists` + `trusted_channels`
 4. Google Drive: create `_PROCESSED/youtube-digest/` folder
